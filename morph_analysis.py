@@ -595,13 +595,6 @@ def analyze_frame_sequence(directory, frame_name_prefix, time_length):
     num_necks = []
     connected_regions = []
     
-    # Initialize initial depercolation parameters
-    roi_single_particle = np.empty((0,0))
-    skeleton = None
-    max_coord = None
-    depercolation = []
-    thr_single_particle = 0
-    
     # Initializing parameters
     flag = 0
     threshold = 0
@@ -631,32 +624,20 @@ def analyze_frame_sequence(directory, frame_name_prefix, time_length):
                     neck_thr = factor * rescaling_factor
                     print("Neck threshold = ", neck_thr, "Unit: ", mag_order)
             
-                # For all other analysis
-                if ask != 7:
-                    if norm == 'n':
-                        crop, roi = ROI_selection_and_cropping(file_path)
-                        gray_img, image_binaryzed, threshold = binary_image_processing(file_path, threshold, roi)
-                        flag = 1
-                    elif norm == 'y':
-                        crop, roi = ROI_selection_and_cropping(file_path)
-                        norm_roi = ROI_selection_and_cropping(file_path)[1]
-                        gray_img, image_binaryzed, threshold = binary_image_processing(file_path, threshold, roi)
-                        flag = 1
-                        
-                # For the depercolation analysis
-                else:
-                    roi_single_particle = ROI_selection_and_cropping(file_path)[1]
-                    #min_distance, skel, max_coordinates, thr_sp = depercolation_ridge(file_path, rescaling_factor, roi_single_particle, skeleton, max_coord, thr_single_particle)
-                    #depercolation.append(min_distance)
+                
+                if norm == 'n':
+                    crop, roi = ROI_selection_and_cropping(file_path)
+                    gray_img, image_binaryzed, threshold = binary_image_processing(file_path, threshold, roi)
+                    flag = 1
+                elif norm == 'y':
+                    crop, roi = ROI_selection_and_cropping(file_path)
+                    norm_roi = ROI_selection_and_cropping(file_path)[1]
+                    gray_img, image_binaryzed, threshold = binary_image_processing(file_path, threshold, roi)
                     flag = 1
                     
             # For subsequent frames, reuse the last computed threshold
             else: 
-                if ask != 7: # For all other analysis
-                    image_binaryzed = binary_image_processing(file_path, threshold, roi)[1]
-                
-                else: # For depercolation analysis
-                    pass
+                image_binaryzed = binary_image_processing(file_path, threshold, roi)[1]
                 
             
             # Perform analysis based on the `ask` parameter
@@ -698,12 +679,7 @@ def analyze_frame_sequence(directory, frame_name_prefix, time_length):
                 num_necks.append(number_of_necks)
             
             elif ask == 7:
-                clear_output(wait=True)
-                print("Currently processing image:", filename)
-                #min_distance = depercolation_ridge(file_path, rescaling_factor, roi_single_particle, skel, max_coordinates, thr_sp)[0]
-                #depercolation.append(min_distance)
                 
-            elif ask == 8:
                 clear_output(wait=True)
                 print("Currently processing image:", filename)
                 segmentation = count_segmented_layer(image_binaryzed, interaction, equidistant_files, t_step, rescaling_factor)
@@ -724,8 +700,6 @@ def analyze_frame_sequence(directory, frame_name_prefix, time_length):
     elif ask == 6:
         return num_necks
     elif ask == 7:
-        return depercolation
-    elif ask == 8:
         return connected_regions
 ########################################################################################################################################################
                                             
@@ -743,7 +717,7 @@ def plot_analysis_results(directory, frame_name_prefix, time_length):
     Note: This function assumes the existence of a function named `analyze_frame_sequence` that processes each frame and returns the desired analysis result.
     """
     global ask, saving_folder, norm
-    ask = int(input("Select analysis: \n1 - Fractal dimension \n2 - Tortuosity \n3 - Porosity \n4 - Ratio of connected material \n5 - Number of clusters \n6 - Number of necks \n7 - Distance(NOT WORKING) \n8 - Number of connected regions \n"))
+    ask = int(input("Select analysis: \n1 - Fractal dimension \n2 - Tortuosity \n3 - Porosity \n4 - Ratio of connected material \n5 - Number of clusters \n6 - Number of necks \n7 - Number of connected regions \n"))
     clear_output(wait=True)
     norm = input("Normalize data? Answer: y/n \n")
     clear_output(wait=True)
@@ -845,21 +819,8 @@ def plot_analysis_results(directory, frame_name_prefix, time_length):
         plt.show()
         
     elif ask == 7: 
-        depercolation_distance = analyze_frame_sequence(directory, frame_name_prefix, time_length)
-         
-        time_step = time_length/len(depercolation_distance)
-        x = range(len(depercolation_distance)+1)
-        time = list(time_unit * time_step for time_unit in x[1:])
         
-        plt.figure()
-        plt.plot(time, depercolation_distance, color='blue', label='Method: Skeleton')
-        #♀plt.plot(time, distance_skel, color='red', label='Method: Skeleton')
-        plt.xlabel('Time (s)')
-        plt.ylabel('Distance (nm)')
-        plt.title('Distance vs time')
-        
-    elif ask == 8: 
-        saving_folder = input("Insert path: \n")
+        saving_folder = input("Insert path for saving images and their corresponding tables: \n")
         
         segmented_regions = analyze_frame_sequence(directory, frame_name_prefix, time_length)
         time_step = time_length/len(segmented_regions)
@@ -941,17 +902,7 @@ def plot_analysis_results(directory, frame_name_prefix, time_length):
             file.truncate()
             
     elif ask == 7:
-        combined_array = np.column_stack((time, depercolation_distance))
-        filename = os.path.join(results_csv_filepath, 'Distance.csv')
-        np.savetxt(filename, combined_array, delimiter=',', fmt='%.6f')
-        # Optionally, write headers to the CSV file
-        with open(filename, 'r+') as file:
-            content = file.read()
-            file.seek(0, 0)
-            file.write("Time (s),Distance (nm)\n" + content)
-            file.truncate()
-            
-    elif ask == 8:
+        
         combined_array = np.column_stack((time, segmented_regions))
         filename = os.path.join(results_csv_filepath, 'Connected regions.csv')
         np.savetxt(filename, combined_array, delimiter=',', fmt='%.6f')
@@ -965,7 +916,7 @@ def plot_analysis_results(directory, frame_name_prefix, time_length):
                                              
 ########################################################################################################################################################
 
-def DyNetAn_project(movie_path, temp_dir_path, fps, time_length):
+def Network_analysis(movie_path, temp_dir_path, fps, time_length):
     """
    Extracts frames from a movie and stores them in a temporary directory for subsequent analysis.
 
@@ -1157,58 +1108,6 @@ def count_necks(neck_map):
 ########################################################################################################################################################
                                               
 ########################################################################################################################################################
-'''def depercolation_ridge(filepath, rescaling_factor, roi, skeleton, max_coord, thr):
-    # Assumendo che image_binary sia una funzione definita altrove che restituisce un'immagine binaria
-    if thr == 0:
-        _, image, thr_sp = binary_image_processing(filepath, 0, roi)
-    else: 
-        image = binary_image_processing(filepath, thr, roi)[1]
-        thr_sp = thr
-    image = np.pad(image, pad_width=1, mode='constant', constant_values=0)
-    # Calcolo delle distanze euclidee
-    edt = distance_transform_edt(image, sampling=None, return_distances=True, return_indices=False, distances=None, indices=None)
-    if skeleton is None:
-        skeleton_bool = skeletonize(edt)
-        skeleton = skeleton_bool.astype(int)
-        min_radius_rescaled = np.zeros_like(skeleton)
-    else:
-        # Initialize an empty map to store the radius-squared values
-        min_radius_rescaled = np.zeros_like(skeleton)
-        
-    # Iterate over each connected component in the WT map
-    for region_id in np.unique(skeleton):
-        if region_id == 0:  # Skip background
-            continue
-        
-        # Get the coordinates of the current region
-        y, x = np.where(skeleton == region_id)
-
-        # Find the nearest zero value in the EDT for each point in the region
-        for i, j in zip(y, x):
-            # Get the distance to the nearest zero value in the EDT
-            dist = edt[i, j]
-            
-            # Store the distance rescaled in the result map
-            min_radius_rescaled[i, j] = 2*dist*rescaling_factor
-    if max_coord is None:       
-        max_coord = np.unravel_index(min_radius_rescaled.argmax(), min_radius_rescaled.shape)
-        max_value = min_radius_rescaled[max_coord]
-        #print(max_coord, max_value)
-    else:
-        max_value = min_radius_rescaled[max_coord]
-        #print(max_coord, max_value)
-
-    #plt.figure(figsize=(12, 10), dpi=80)
-    #plt.imshow(min_radius_rescaled, cmap='turbo')
-    #plt.title('Ridge map')
-    #plt.axis('off')
-    #plt.show()
-
-    return max_value, skeleton, max_coord, thr_sp'''
- ########################################################################################################################################################
-                                               
- ########################################################################################################################################################
-
 def count_segmented_layer(image, interaction, equidistant_files, t_step, rescaling_factor):
     
     global saving_folder

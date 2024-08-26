@@ -1,0 +1,11 @@
+opencv-python
+numpy
+porespy
+matplotlib
+openpnm
+scipy
+pandas
+dataframe-image
+moviepy
+IPython
+scikit-image
