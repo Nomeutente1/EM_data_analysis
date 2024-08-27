@@ -11,29 +11,27 @@ More specifically, the `morph_analysis.py` module offers various functions that 
 - Provides images and corresponding tables for the segmentation measurements
 
 # Installation
-'EM_data_analysis' requires Python 3.6 or above. 
+`EM_data_analysis` requires Python 3.6 or above. 
 
-### Installation using 'pip' (recommended):
-'''markdown
-'''bash
+### Installation using `pip` (recommended):
+```bash
 pip install EM_data_analysis
-'''
-'''
+```
   
 # Usage
 Create an empty directory (will be used to store all the frames created from the movie). Then, simply input the path of the movie, the directory created to store the frames, frame rate and the time length.
-'''markdown
-'''python
+
+```python
 from EM_data_analysis import morph_analysis as ma
 
 Network_analysis("path-of-the-movie", "path-of-the-directory", frame-rate, time-length) 
-'''
-'''
+```
+
 
 The movie format must be explicit and could be in AVI or MP4 format.
 
 # Contributions
-EM_data_analysis is created by Mattia Lizzano
+`EM_data_analysis` is created by Mattia Lizzano
 
 
 
