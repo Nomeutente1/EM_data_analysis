@@ -24,7 +24,7 @@ Create an empty directory (will be used to store all the frames created from the
 ```python
 from EM_data_analysis import morph_analysis as ma
 
-Network_analysis("path-of-the-movie", "path-of-the-directory", frame-rate, time-length) 
+ma.Network_analysis("path-of-the-movie", "path-of-the-directory", frame-rate, time-length) 
 ```
 
 
