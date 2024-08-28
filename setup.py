@@ -1,12 +1,23 @@
 from setuptools import setup, find_packages
+from setuptools.command.install import install
+import os
+import subprocess
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+    def run(self):
+        
+        subprocess.check_call([os.sys.executable, "-m", "pip", "install", "--upgrade", "nbconvert"])
+        subprocess.check_call([os.sys.executable, "-m", "pip", "install", "--upgrade", "mistune"])
+        subprocess.check_call([os.sys.executable, "-m", "pip", "install", "imageio-ffmpeg"])
+        install.run(self)
 
 setup(
     name='EM_data_analysis',  
-    version='1.0.4',  
+    version='1.0.5',  
     packages=find_packages(),  
     install_requires=[
         'opencv-python',       
@@ -33,5 +44,8 @@ setup(
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.6',  
+    cmdclass={
+        'install': PostInstallCommand,  # Associa il comando di post-installazione
+    },
 )
 
