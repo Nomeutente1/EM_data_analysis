@@ -19,12 +19,12 @@ pip install EM_data_analysis
 ```
   
 # Usage
-Create an empty directory (will be used to store all the frames created from the movie). Then, simply input the path of the movie, the directory created to store the frames, frame rate and the time length.
+Create an empty directory (will be used to store all the frames created from the movie). Then, simply input the path of the movie and the directory created to store the frames.
 
 ```python
 from EM_data_analysis import morph_analysis as ma
 
-ma.Network_analysis("path-of-the-movie", "path-of-the-directory", frame-rate, time-length) 
+ma.Network_analysis("path-of-the-movie", "path-of-the-directory") 
 ```
 
 
