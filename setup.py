@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='EM_data_analysis',  
-    version='1.0.3',  
+    version='1.0.4',  
     packages=find_packages(),  
     install_requires=[
         'opencv-python',       
