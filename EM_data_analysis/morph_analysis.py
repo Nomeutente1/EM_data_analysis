@@ -915,7 +915,7 @@ def plot_analysis_results(directory, frame_name_prefix, time_length):
                                              
 ########################################################################################################################################################
 
-def Network_analysis(movie_path, temp_dir_path, fps, time_length):
+def Network_analysis(movie_path, temp_dir_path):
     """
    Extracts frames from a movie and stores them in a temporary directory for subsequent analysis.
 
