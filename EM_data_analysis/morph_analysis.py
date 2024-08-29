@@ -619,7 +619,7 @@ def analyze_frame_sequence(directory, frame_name_prefix, time_length):
                 
                 if ask == 6:
                     
-                    factor = int(input("Insert factor for neck thresholding:"))
+                    factor = float(input("Insert factor for neck thresholding:"))
                     neck_thr = factor * rescaling_factor
                     print("Neck threshold = ", neck_thr, "Unit: ", mag_order)
             
@@ -933,6 +933,7 @@ def Network_analysis(movie_path, temp_dir_path):
     time_length = clip.duration
     fps = clip.fps
     clip.subclip(0, time_length).write_images_sequence(temp_dir_path + 'frame%04d.png', fps=fps)
+    clip.close()
     
     # Ask the user if they want to delete the image stack after analysis
     remove = input("After the analysis, want to delete the image stack? Answer: y/n")
