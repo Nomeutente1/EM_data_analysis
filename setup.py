@@ -9,7 +9,6 @@ with open("README.md", "r") as fh:
 class PostInstallCommand(install):
     def run(self):
         try:
-            subprocess.check_call([os.sys.executable, "-m", "pip", "install", "--upgrade", "dataframe-image"])
             subprocess.check_call([os.sys.executable, "-m", "pip", "install", "--upgrade", "nbconvert"])
             
             installed_packages = subprocess.check_output([os.sys.executable, "-m", "pip", "freeze"]).decode("utf-8")
@@ -24,7 +23,7 @@ class PostInstallCommand(install):
 
 setup(
     name='EM_data_analysis',  
-    version='1.0.6',  
+    version='1.0.7',  
     packages=find_packages(),  
     install_requires=[
         'opencv-python',       
@@ -36,7 +35,8 @@ setup(
         'pandas',              
         'moviepy',             
         'IPython',             
-        'scikit-image',        
+        'scikit-image',      
+        'dataframe-image',
     ],
     description='A Python package for EM data analysis',
     long_description=long_description,
