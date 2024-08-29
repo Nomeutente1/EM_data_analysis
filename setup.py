@@ -7,17 +7,24 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 class PostInstallCommand(install):
-    """Post-installation for installation mode."""
     def run(self):
-        
-        subprocess.check_call([os.sys.executable, "-m", "pip", "install", "--upgrade", "nbconvert"])
-        subprocess.check_call([os.sys.executable, "-m", "pip", "install", "--upgrade", "mistune"])
-        subprocess.check_call([os.sys.executable, "-m", "pip", "install", "imageio-ffmpeg"])
+        try:
+            subprocess.check_call([os.sys.executable, "-m", "pip", "install", "--upgrade", "dataframe-image"])
+            subprocess.check_call([os.sys.executable, "-m", "pip", "install", "--upgrade", "nbconvert"])
+            
+            installed_packages = subprocess.check_output([os.sys.executable, "-m", "pip", "freeze"]).decode("utf-8")
+            if "mistune==3.0.2" in installed_packages:
+                subprocess.check_call([os.sys.executable, "-m", "pip", "uninstall", "-y", "mistune"])
+            
+            subprocess.check_call([os.sys.executable, "-m", "pip", "install", "mistune==2.0.4"])
+        except subprocess.CalledProcessError as e:
+            print(f"Error occurred during post-install: {e}")
+            
         install.run(self)
 
 setup(
     name='EM_data_analysis',  
-    version='1.0.5',  
+    version='1.0.6',  
     packages=find_packages(),  
     install_requires=[
         'opencv-python',       
@@ -27,7 +34,6 @@ setup(
         'openpnm',             
         'scipy',              
         'pandas',              
-        'dataframe-image',     
         'moviepy',             
         'IPython',             
         'scikit-image',        
@@ -45,7 +51,7 @@ setup(
     ],
     python_requires='>=3.6',  
     cmdclass={
-        'install': PostInstallCommand,  # Associa il comando di post-installazione
+        'install': PostInstallCommand,
     },
 )
 
