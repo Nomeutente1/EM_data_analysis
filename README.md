@@ -31,7 +31,7 @@ ma.Network_analysis("path-of-the-movie", "path-of-the-directory")
 The movie format must be explicit and could be in AVI or MP4 format.
 
 # Contributions
-`EM_data_analysis` is created by Mattia Lizzano
+`EM_data_analysis` is created by Mattia Lizzano, Giorgio Divitini and the Electron Microscopy and Nanoscopy group of Italian Institute of Technology (IIT)
 
 
 
