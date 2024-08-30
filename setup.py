@@ -23,7 +23,7 @@ class PostInstallCommand(install):
 
 setup(
     name='EM_data_analysis',  
-    version='1.0.7',  
+    version='1.1.0',  
     packages=find_packages(),  
     install_requires=[
         'opencv-python',       
@@ -41,7 +41,7 @@ setup(
     description='A Python package for EM data analysis',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author='Mattia Lizzano',
+    author='Mattia Lizzano, Giorgio Divitini',
     author_email='mattializzano@gmail.com',
     url='https://github.com/Nomeutente1/EM_data_analysis',  
     classifiers=[
