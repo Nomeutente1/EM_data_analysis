@@ -1,4 +1,5 @@
 import cv2
+import gc
 import numpy as np
 import porespy as ps
 import matplotlib.pyplot as plt
@@ -6,7 +7,6 @@ import openpnm as op
 import os.path
 from moviepy.editor import VideoFileClip
 import os
-import shutil
 import scipy.ndimage as sn
 from IPython.display import clear_output
 from skimage.morphology import skeletonize
@@ -915,39 +915,29 @@ def plot_analysis_results(directory, frame_name_prefix, time_length):
                                              
 ########################################################################################################################################################
 
-def Network_analysis(movie_path, temp_dir_path):
+def Network_analysis(movie_path, dir_path):
     """
    Extracts frames from a movie and stores them in a temporary directory for subsequent analysis.
 
    Parameters:
    - movie_path (str): Full path to the movie file.
-   - temp_dir_path (str): Full path to the temporary directory where extracted frames will be stored.
+   - dir_path (str): Full path to the directory where extracted frames will be stored.
 
    After extraction, it calls `plot_analysis_results` function to perform analysis on the extracted frames.
    """ 
     # Ensure the temporary directory exists
-    os.makedirs(temp_dir_path, exist_ok=True)
+    os.makedirs(dir_path, exist_ok=True)
     
     # Extract frames from the movie
     clip = VideoFileClip(movie_path)
     time_length = clip.duration
     fps = clip.fps
-    clip.subclip(0, time_length).write_images_sequence(temp_dir_path + 'frame%04d.png', fps=fps)
+    clip.subclip(0, time_length).write_images_sequence(dir_path + 'frame%04d.png', fps=fps)
     clip.close()
     
-    # Ask the user if they want to delete the image stack after analysis
-    remove = input("After the analysis, want to delete the image stack? Answer: y/n")
-    clear_output(wait=True)
-    
     # Perform analysis on the extracted frames
-    plot_analysis_results(temp_dir_path, "frame", time_length)
-    
-    
-    # Delete the temporary directory if the user chooses to do so
-    if remove.lower() == 'y':
-        shutil.rmtree(temp_dir_path)
-    elif remove.lower() == 'n':
-        pass
+    plot_analysis_results(dir_path, "frame", time_length)
+    gc.collect()
     
 ########################################################################################################################################################
                                               
