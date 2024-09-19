@@ -1175,7 +1175,7 @@ def count_segmented_layer(image, interaction, equidistant_files, t_step, rescali
         ])
         
         file_path = f"{saving_folder}\\Table_t={filename} s.png"
-        dfi.export(styled_df, file_path, table_conversion = "chrome")
+        dfi.export(styled_df, file_path, table_conversion = "matplotlib")
         
     return retval-1
     

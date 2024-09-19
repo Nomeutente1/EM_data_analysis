@@ -23,7 +23,7 @@ class PostInstallCommand(install):
 
 setup(
     name='EM_data_analysis',  
-    version='1.1.0',  
+    version='1.1.1',  
     packages=find_packages(),  
     install_requires=[
         'opencv-python',       
